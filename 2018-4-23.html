@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+<main>
+  <h2>写一个execTime</h2>
+  <ul>
+    <li>参数：时间毫秒数</li>
+    <li>作用：什么都不做</li>
+    <li>函数执行会耗时参数传递的毫秒数</li>
+  </ul>
+  <button onclick="opert()">执行</button>
+</main>
+<script>
+  function opert() {
+    console.log(1);
+    execTime(3000);
+    console.log(2);
+  }
+  /** execTime 睡眠函数
+   *    参数:
+   *      t: 睡眠时间
+   *    实现:
+   *      取得开始时间
+   *      循环比较当前时间与开始时间的差值
+   *        > t 结束循环
+   *        < t 继续
+   * */
+  function execTime(t) {
+    var startTime = new Date();
+    var endTime,timeDiff;
+    
+    do{
+      endTime = new Date();
+      timeDiff = endTime - startTime;
+    }while( timeDiff < t)
+  }
+
+</script>
+</body>
+</html>
