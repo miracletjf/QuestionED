@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+<main>
+  <h2>写一个函数fn，使得fn满足以下条件</h2>
+  <ul>
+    <li>fn() === fn</li>
+    <li>fn.fn === fn</li>
+  </ul>
+  <button onclick="operate()">点击</button>
+</main>
+
+<script>
+  /** 实现思路
+   *  1. 参考前一天的思路
+   *  2. 定义function fn(){}
+   *  3. fn() === fn,所以fn()指向fn本身 即：function fn(){return fn};
+   *  4. fn.fn === fn,所以fn.fn = fn（不太确定这种写法是否正确）
+   * */
+  
+  function fn() {
+    return fn;
+  }
+  
+  fn.fn = fn;
+  
+  function operate(){
+    console.log(fn() === fn);
+    console.log(fn.fn === fn);
+  }
+</script>
+</body>
+</html>
