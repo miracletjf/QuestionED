@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+  <main>
+    <h2>写一个execTime函数</h2>
+    <ul>
+      <li>参数t: 时间毫秒数</li>
+      <li>参数callback: 回调函数</li>
+      <li>执行结果，3秒后执行回调</li>
+    </ul>
+    <button onclick="operate()">点击回调</button>
+  </main>
+
+  <script>
+    function operate() {
+        console.log(1);
+        execTime(3000,function () {
+            console.log(3);
+        });
+        console.log(2);
+    }
+    function execTime(t,callback){
+        setTimeout(function () {
+            callback();
+        },t);
+    }
+
+
+
+  </script>
+</body>
+</html>
