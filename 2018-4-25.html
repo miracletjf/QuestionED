@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+<main>
+  <h2>用js写一个对象使得</h2>
+  <ul>
+    <li>obj.obj.obj.obj.obj === obj</li>
+    <li>不管出现多少次obj，都得到obj</li>
+  </ul>
+  <button onclick="operate()">点击</button>
+</main>
+<script>
+  /** 思路
+   *  1. 写一个obj空对象
+   *  2. 设置obj.obj = obj
+   *
+   * 错误思路
+   *  使用构造函数
+   *    1. 利用prototype
+   *    2. 通过属性返回this对象（不可行，prototype中的属性不能直接访问this属性）
+   *    3. 通过函数返回this（不可行，函数需要调用才有返回值，不符合题意）
+   *  使用空对象
+   *    1. 直接定义 var obj = {obj:obj}（不可行，直接使用obj:obj,右边的obj还没有定义过）
+   *    2. 根据变量提升的原则，原写法会转换成 var obj; obj = {obj:obj}
+   *    3. 因为运算规则是从右到左，右边obj并未定义过，所以obj = {obj:undefined}
+   *  直接定义对象，并赋值
+   *    1. 直接定义一个空obj对象，var obj = {}
+   *    2. 设置 obj={obj:obj}（不可行，右边的obj指向一个空对象）
+   *    3. 等号右边{obj:obj}等于是开辟了一个新的内存空间
+   *    4. 左边的obj直接指向新的内存空间，右边的obj对应空，左右内存地址不统一
+   *    5. obj对象现在只是一个包括一个空对象地址的对象，并没有指向本身
+   *
+   * */
+
+
+function operate() {
+      var obj = {};
+      obj.obj = obj;
+      console.log(obj.obj.obj.obj.obj.obj === obj);
+  }
+
+
+
+</script>
+</body>
+</html>
