@@ -11,12 +11,16 @@
     <li>obj.obj.obj.obj.obj === obj</li>
     <li>不管出现多少次obj，都得到obj</li>
   </ul>
-  <button onclick="operate()">点击</button>
+  <button onclick="operate2()">点击</button>
 </main>
 <script>
   /** 思路
-   *  1. 写一个obj空对象
-   *  2. 设置obj.obj = obj
+   *  对象实现方法
+   *    1. 写一个obj空对象
+   *    2. 设置obj.obj = obj
+   *  构造函数实现方法
+   *    1. 定义一个构造函数
+   *    2. 让其内部this.obj 指向 this
    *
    * 错误思路
    *  使用构造函数
@@ -43,7 +47,15 @@ function operate() {
       console.log(obj.obj.obj.obj.obj.obj === obj);
   }
 
+function operate2() {
+  var obj = new Obj();
 
+  console.log(obj.obj.obj.obj === obj);
+}
+
+function Obj() {
+  this.obj = this;
+}
 
 </script>
 </body>
