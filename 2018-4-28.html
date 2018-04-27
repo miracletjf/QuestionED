@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+<main>
+  <h2>写一个函数fn,使得fn满足以下条件</h2>
+  <ul>
+    <ol>fn() == 'a'</ol>
+    <ol>fn()() == 'b'</ol>
+    <ol>fn()()() === 'c'</ol>
+  </ul>
+  <button onclick="operate()">点击</button>
+</main>
+<script>
+  /** 实现思路（参考昨天类似问题的同学的答案）
+   *    1. 相等运算符在比较时，先检测类型是否相同，类型不同线转换为相同类型
+   *       再使用严格相等运算符比较
+   *    2. 对象转字符串，先调用valueOf方法在使用toString转变为字符串
+   *    3. fn() 返回一个a,a本身是一个function对象，改变valueOf返回'a'
+   *       所以 'a' === 'a' 即 a == 'a' --->  fn() == 'a'
+   *     4. 同理可得fn()()
+   * */
+  function fn() {
+    return a;
+  }
+  function a() {
+    return b;
+  }
+  a.valueOf= function () {
+    return 'a'
+  };
+  function b() {
+    return 'c'
+  }
+  b.valueOf =function () {
+    return 'b'
+  };
+ 
+  
+  function operate(){
+    console.log(fn() == 'a');
+    console.log(fn()() == 'b');
+    console.log(fn()()() == 'c');
+  }
+</script>
+</body>
+</html>
