@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+<main>
+  <h2>写出一个函数fn</h2>
+  <ol>
+    <li>fn()打印出'a'</li>
+    <li>fn()()打印出'b'</li>
+    <li>fn()()()打印出'c'</li>
+  </ol>
+  <button onclick="operate()">点击</button>
+</main>
+
+<script>
+
+  /** 实现思路
+   *  1. 因为fn(),fn()(),fn()()()都可以执行，且打印不同的值
+   *     所以，fn()一定是return function();
+   *     同理，fn()()也是return function();
+   *  2. 又因为fn(),fn()(),fn()()(),都只打印出一个值
+   *     所以，fn(){}内部只有一个console.log()
+   *  3. 因为他们打印的值不同，所以在内部return 的函数中
+   *     改变了fn()中的变量（chr）
+   *  4. 若直接打印出内部变量
+   *     由于执行顺序的问题，变量（chr）并不会被内部函数改变
+   *     所以要利用 setTimeout 来延迟输出变量
+   *  5. 因为 setTimeout 最小调用时间会被函数嵌套层数影响
+   *     所以不写,delay 也是没有关系的
+   * */
+ function fn() {
+    var chr = 'a';
+
+    setTimeout(function () {
+      console.log(chr);
+    });
+
+    return function () {
+      chr = 'b';
+      return function () {
+        chr ='c';
+      }
+    }
+
+  }
+  function operate() {
+    fn();
+    fn()();
+    fn()()();
+  }
+
+</script>
+
+</body>
+</html>
