@@ -33,18 +33,13 @@
    * */
  function fn() {
     var chr = 'a';
-
-    setTimeout(function () {
-      console.log(chr);
-    });
-
+    setTimeout(function () {console.log(chr);});
     return function () {
       chr = 'b';
       return function () {
         chr ='c';
       }
     }
-
   }
   function operate() {
     fn();
