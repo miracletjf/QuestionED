@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+<input id="ipt" type="text" value="default">
+<button id="btn_a" class="btn">按钮A</button>
+<button id="btn_b" class="btn">按钮B</button>
+<script>
+
+  /** 实现思路
+   *  1. 看到题目，立马可以想到Promise
+   *     1). 事件不确定个数
+   *     2). 每次事件发生都是在前一个事件基础上发生的（第一个除外）
+   *     3). 想不到其他的
+   *  2. 每次点击生成一个Promise对象，接到执行队列上
+   *  3. 把本次Promise对象放到上一次Promise对象的then()中，控制执行顺序
+   *     并返回当前的Promise对象，更新队列
+   *  4. 点击之后应立即开始执行队列，
+   *     仅需要在第一次点击时开始，
+   *     接下来会根据每个队列中Promise的状态来执行
+   * */
+
+  const ipt = document.getElementById('ipt');
+  let index =0;
+  let promiseNow;
+
+  const btns = document.querySelectorAll('.btn');
+  const btnsArr = Array.prototype.slice.call(btns,0);
+
+  btnsArr.forEach(function (ele) {
+    ele.onclick = function () {
+      let promiseTemp = () => {
+        return new Promise(resolve => {
+          if (ele.id === 'btn_a') {
+            setTimeout(() => {console.log('btn_a');ipt.value = '按钮A';resolve();}, 5000);
+          } else if (ele.id === 'btn_b') {
+            setTimeout(() => {console.log('btn_b');ipt.value = '按钮B';resolve();}, 1000)
+          }
+        });
+      };
+
+      if(index === 0){
+        promiseNow = promiseTemp();
+      }else {
+        promiseNow = promiseNow.then(()=>{return promiseTemp();});
+      }
+      index++;
+    }
+  });
+
+
+
+
+
+</script>
+</body>
+</html>
