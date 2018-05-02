@@ -5,6 +5,16 @@
   <title>Title</title>
 </head>
 <body>
+<main>
+  <p>
+    某个应用模块有文本框input,以及按钮A,按钮B组成。点击按钮A,想地址urlA发出一个ajax请求，并将返回的字符串填充到input中
+    （覆盖input中原有的数据），点击按钮B，会向urlB发出一个ajax请求，并将返回的字符串填充到input中（覆盖input中原有的数据）。<br>
+    当用户依次点击按钮A、B的时候，预期的效果是input依次被urlA,urlB返回的数据填充，但是由于到urlA的请求返回比较慢，
+    导致urlB返回的数据被urlA的返回数据覆盖了， 与用户预期的顺序不一致。<br>
+    如何设计代码解决这个问题？
+  </p>
+</main>
+
 <input id="ipt" type="text" value="default">
 <button id="btn_a" class="btn">按钮A</button>
 <button id="btn_b" class="btn">按钮B</button>
