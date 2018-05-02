@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+  <main>
+    <h2>用promise改写函数</h2>
+    <p>小明成绩不好，每次考试都靠瞎猜，小明的老师对他说：小明，如果考不到60分你继续考，直到考到60分，我实现你的愿望，让你和凯丽坐到一起。</p>
+    <pre>
+      function exam(){
+        var score = Math.floor(Math.random * 101);
+        if(score >= 60){
+          console.log('及格，和凯丽坐一起')
+        } else {
+          console.log('不及格，继续考试');
+          setTimeout(exam,1000);
+        }
+      }
+      exam();
+    </pre>
+    <ul>
+      <ol>用promise改写上述代码，能用以下方式调用</ol>
+      <ol>exam().then(score => {console.log('及格，和凯丽坐一起',score)})</ol>
+    </ul>
+    
+    <button onclick="operate()">点击</button>
+  </main>
+
+  <script>
+    
+    
+    /** 实现思路
+     *  1. 关于Promise，前几天正好听了若愚老师的直播，了解一点基础知识
+     *  2. resolve 对应.then()里面的回调
+     *  3. 因为执行时只有一个then()
+     *     所以函数中只有一层 promise ，也就是说 resolve 不会反复调用 exam 函数
+     *  4. 又因为,需要满足 score >= 60 才结束，并且执行resolve
+     *     所以，需要反复执行，判断，有两种方案可行
+     *     1. 循环
+     *     2. 递归调用
+     *  5. 我采用递归这种，所以需要在promise内部在添加一个函数，代码如下
+     * */
+    function exam() {
+      return new Promise(function (resolve,reject) {
+        fn();
+        function fn() {
+          let score = Math.floor(Math.random() * 101);
+          if (score >= 60) {
+            resolve(score);
+          } else {
+            console.log('不及格，继续考试');
+            setTimeout(fn,1000);
+          }
+        }
+      })
+    }
+    function operate() {
+      exam().then(score => {
+        console.log('及格，和凯丽坐一起',score);
+      })
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+<main>
+  <h2>写一个byField函数，实现数组按性别、年纪、任意字段排序</h2>
+  <ul>
+    <li>var users = [{name:'John',age:20,company: 'Jirengu'},{name:'Pete',age:18,company: 'Alibaba'},{name:'John',age:19,company: 'Tencent'}]</li>
+    <li>users.sort(byField('company'))</li>
+    <li>users.sort(byField('name'))</li>
+  </ul>
+  
+  <button onclick="operate()">点击</button>
+</main>
+<script>
+  /** 实现思路
+   *  1. Array.prototype.sort()方法可接受一个指定排序规则的函数
+   *  2. 函数可接受两个将要被比较的元素，a 和 b
+   *     若返回值大于0，则将 a 放后面，其他情况不改变顺序
+   *  3. 题意是要接受一个排序的字段，对数组进行排序
+   *     所以该数组需要返回一个对该字段进行比较的 比较函数
+   * */
+  let users = [{name:'John',age:20,company: 'Jirengu'},
+               {name:'Pete',age:18,company: 'Alibaba'},
+               {name:'Ann',age:19,company: 'Tencent'}];
+  
+  function byField(field) {
+    return function (o1,o2) {
+      if(typeof o1[field] === 'number'){
+        return o1[field] - o2[field];
+      }else{
+        return o1[field].localeCompare(o2[field]);
+      }
+    }
+  }
+  
+  function operate() {
+      console.log(users.sort(byField('age')));
+  }
+  
+</script>
+</body>
+</html>

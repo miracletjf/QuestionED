@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+<main>
+  <pre>
+    const obj = {a:1,b:2,c:3}
+    function select(obj,arr){
+      //实现该方法
+    }
+    select(obj,['a','c'])
+    //输出 {a:1,c:3}
+  </pre>
+  <h3>提示：</h3>
+  <ul>
+    <ol>尽量使用ES6</ol>
+    <ol>尽可能多的方法实现，代码越少越好</ol>
+  </ul>
+  <button onclick="operate()">点击</button>
+</main>
+<script>
+  /** 首先想到的方法:for循环变量 arr
+   * */
+  
+  const obj = {a:1,b:2,c:3}
+  const select = (obj,arr) => {
+    let objTemp = {};
+    for(let i =0 ;i<arr.length;i++){
+      objTemp[arr[i]] = obj[arr[i]];
+    }
+    return objTemp;
+  };
+  
+  /** 浏览了一下ES6，看到了Iterator 和 for...of循环
+   *  有了以下两种想法
+   *  1. 使用数组的Symbol.iterator属性
+   *     主要是为了熟悉一下这个属性，用一下
+   *  2. 使用for...of迭代获取数组value
+   *      这个相对简洁一点
+   * */
+  
+  const select1 = (obj,arr) => {
+    let objTemp = {};
+    let iter = arr[Symbol.iterator]();
+
+    let val = iter.next().value;
+    while (!!val){
+       objTemp[val] = obj[val];
+       val = iter.next().value;
+    }
+    return objTemp;
+  };
+  
+  const select2 = (obj,arr) => {
+    let objTemp = {};
+    for(let val of arr){
+      objTemp[val] = obj[val];
+    }
+    return objTemp;
+  };
+  
+  
+  const operate = () => {
+    console.log(select(obj,['a','b']));
+    console.log(select1(obj,['a','b']));
+    console.log(select2(obj,['a','b']));
+  };
+</script>
+</body>
+</html>
