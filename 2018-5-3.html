@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+<main>
+  <h2>写一个execTimes函数，用于测试一个函数这行一定次数的时长</h2>
+  <p>如：execTimes(sort,1000)('hello')表示：执行sort函数1000次，sort的参数是'hello'</p>
+  <button onclick="operate()">点击</button>
+</main>
+<script>
+
+  /** 实现思路
+   *  1. execTime函数需要计算 函数执行指定次数所需的时间
+   *     所以需要startTime 和 endTime ,计算时间差
+   *  2. 因为调用函数的方式是 execTime(sort,1000)('hello')
+   *     所以第一步需要返回一个函数，并且返回的函数还要接受 被计算函数的参数
+   *     所以需要在函数的内部接受这个参数
+   *  3. 因为参数个数不限，没办法用具体的个数的变量去接受
+   *     只能用arguments接收
+   *  4. 执行被计算函数fn，正常的执行肯定行不通的
+   *     因为fn不能直接使用arguments当参数，所以需要借助apply()
+   *  5. 查看文档可知，apply()第二个参数可以是数组，或者类数组对象，可满足要求
+   *
+   * */
+
+  function execTimes(fn,times) {
+    return function () {
+      let start = Date.now();
+      for(let i=0;i<times;i++){
+        fn.apply(null,arguments);
+      }
+      let end = Date.now();
+      return end - start ;
+    }
+  }
+  function sort(str) {
+    return str.split('').sort().join('');
+  }
+  function operate() {
+    let time = execTimes(sort,1000)('hello');
+    console.log(time);
+  }
+
+</script>
+</body>
+</html>
