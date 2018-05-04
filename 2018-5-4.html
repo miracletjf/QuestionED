@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+<main>
+  <h2>用JavaScript实现一个方法，该方法能够判断两个字符串是否匹配，如：</h2>
+  <pre>
+    function isMatch(str1,str2){
+      // ...
+    }
+    isMatch('something','ginhtemos') //true
+    isMatch('aaa','aa') //false
+    isMatch('bbb','baa') //false
+    isMatch('hello','hello') //true
+  </pre>
+  <button onclick="operate()">点击</button>
+</main>
+
+<script>
+
+  // 性能计算函数
+  function execTimes(fn,times) {
+    return function () {
+      let start = Date.now();
+      for(let i=0;i<times;i++){
+        fn.apply(null,arguments);
+      }
+      let end = Date.now();
+      return end - start ;
+    }
+  }
+
+  /** 实现方法
+   *  1. 先对字符串排序，再逐一对比
+   *  2. 两层for循环
+   *     (1). 如果匹配，标记并且break
+   *     (2). 一轮循环结束，没有匹配值，return false
+   *  3. 利用hash表来存数据
+   *      (1). hash1存str1
+   *      (2). hash2存str2
+   *      (3). 比较两个hash是否相等，不相等return false
+   *  4. 利用indexOf判断str2中的每个元素
+   * */
+
+  //匹配函数
+  function isMatch(str1,str2) {
+    if(str1.length !== str2.length){
+      return false;
+    }
+    let strArr1 = str1.split('').sort();  //nlogn
+    let strArr2 = str2.split('').sort();  //nlogn
+    for(let i = 0;i< strArr1.length; i++){  //(1+n)/2
+      if(strArr1[i] !== strArr2[i]){
+        return false;
+      }
+    }
+    return true;
+  }
+
+  //匹配函数2
+  function isMatch2(str1,str2) {
+    if(str1.length!==str2.length){
+      return false;
+    }
+    let tempFlag = false;
+    let flag = [];
+    for(let i=0;i<str1.length;i++){
+      tempFlag = false;
+      for(let j = 0;j<str2.length; j++){
+        if(str1[i] === str2[j] && typeof flag[j] === 'undefined'){
+          flag[j] = 1;
+          tempFlag = true;
+          break;
+        }
+      }
+      if(!tempFlag){
+        return false;
+      }
+    }
+    return tempFlag;
+  }
+
+  //匹配函数3
+  function isMatch3(str1,str2) {
+    if(str1.length!==str2.length){
+      return false;
+    }
+    let hash1 ={};
+    let hash2 ={};
+    for(let i=0;i<str1.length;i++){ //n
+      if(!hash1[str1[i]]){
+        hash1[str1[i]] = 0;
+      }
+      if(!hash2[str2[i]]){
+        hash2[str2[i]] = 0;
+      }
+      hash1[str1[i]]++;
+      hash2[str2[i]]++;
+    }
+
+    for(let key in hash1){  //n
+      if(hash1[key] !== hash2[key]){
+        return false;
+      }
+    }
+
+    return true;
+
+  }
+
+  //匹配函数4
+  function isMatch4(str1,str2) {
+    if(str1.length!==str2.length){
+      return false;
+    }
+    let str1Arr = Array.prototype.slice.call(str1);
+    let temp;
+    let flag = [];
+    for(let i=0;i<str2.length;i++){
+       temp= str1Arr.indexOf(str2[i]);
+      if( temp === -1 || typeof flag !== 'undefined'){
+        return false;
+      }
+      flag[temp] = 1;
+      str1Arr.splice(temp,1);
+    }
+
+    return true;
+
+  }
+
+  function test(str1,str2) {
+    console.log(execTimes(isMatch,10000)(str1,str2),'match');
+    console.log(execTimes(isMatch2,10000)(str1,str2),'match2');
+    console.log(execTimes(isMatch3,10000)(str1,str2),'match3');
+    console.log(execTimes(isMatch4,10000)(str1,str2),'match4');
+    console.log('\n');
+  }
+
+  function operate() {
+    test('hello','heoll');
+    test('heeello','heoooll');
+    test('something','gnihtemos');
+    test('laksjdhfgzmxncbvtyrueiowpq','tyureiowpqjdhfgskalmznxbcv');
+    test('asdflkjhglkjhashdg','fdlsjkdfgaslkdfkgs');
+  }
+
+
+</script>
+</body>
+</html>
