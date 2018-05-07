@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+  <title>Title</title>
+</head>
+<body>
+<div class="father">
+  <div class="child">child</div>
+</div>
+<main>
+
+</main>
+<script>
+  $('.child').on('click',function () {
+    console.log(this,1);  //this 代表被点击的 child 的 Dom 元素
+  })
+  $('.father').on('click','.child',function () {
+    console.log(this,2)   //this 代表被点击到的 child 的 Dom 元素
+  })
+  $('.child')[0].onclick = function () {
+    console.log(this,3) //this 代表被点击的 child 的 Dom 元素
+  }
+  var app = {
+    init:function () {
+      this.$father = $('.father')   //this 代表 app 对象
+      this.$child = $('.child')     //this 代表 app 对象
+      this.bind() //this 代表 app 对象
+    },
+    bind: function () {
+      var _this = this        //this 代表 app 对象
+      this.$father.on('click',this.sayHi) //内部 this 由其点击的this 决定，所以 是 father 的 Dom 元素
+      this.$child.on('click',function(){  //this 代表 app 对象
+        _this.sayHello()  //_this.sayHello() -> _this.sayHello().call(_this)  所以内部函数的this指代 app 对象
+      })
+      this.$child.on('click',this.sayBye.bind(this))  //this.sayBye.bind(this) 所以内部执行函数的this 指代的 是 bind 的this 即：app对象
+    },
+    sayHi:function () {
+      console.log(this,4)
+    },
+    sayHello:function () {
+      console.log(this,5)
+    },
+    sayBye:function () {
+      console.log(this)
+    }
+  }
+  app.init();
+</script>
+</body>
+</html>

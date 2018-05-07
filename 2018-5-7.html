@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>jsonp</title>
+</head>
+<body>
+<main>
+  <h2>封装一个jsonp方法，可以使用如下方式调用</h2>
+  <strong>jsonp(url[,data][,callbackName])</strong>
+  <dl>
+    <dt>url</dt>
+    <dd>类型:String,请求 url</dd>
+    <dt>data</dt>
+    <dd>类型：PlainObjec,参数对象</dd>
+    <dt>callbackName</dt>
+    <dd>类型：String,传递给服务端的回调函数的key</dd>
+    <dd>默认是"callback"</dd>
+    <dt>返回值</dt>
+    <dd>Promise对象</dd>
+  </dl>
+</main>
+
+<script type="text/javascript">
+  /** jsonp
+   *  （在此之前，一直听说过jsonp，但是工作生活中一直没有很在意它实现的原理
+   *  只知道是用来解决跨域的问题的，如果要用都是去用jquery提供的，
+   *  所以一直把它当做ajax相关的东西，今天为了做这个题目，去google上了解了一下
+   *  才明白其原理）
+   *
+   *  jsonp 的 全称是 json with padding (理解为：填充json)
+   *  实现原理，通过script标签中的src,请求服务端的json数据
+   * */
+  function jsonp(url,data,callbackName) {
+    return new Promise((resolve)=>{
+      //若用户只传了两个参数，判断第二个参数类型
+      callbackName = (typeof data === 'string' && typeof callbackName === 'undefined') ? data : callbackName;
+      
+      let script = document.createElement('script');
+      script.setAttribute('type','text/javascript');
+      url +=`?${!callbackName?callbackName:'callback'}`;
+      if(typeof data === 'object'){
+        const keys = Object.keys(data);
+        for(let val of keys){
+          url += `&${val}=${data[val]}`;
+        }
+      }
+      //防止缓存请求内容在结尾加一个 时间戳
+      url += `&_=${Date.now()}`;
+      //因为要求请求的函数名为fn (虽然这个fn不重要，但是要跟请求的callbackName的value一样)
+      const fn = (dataJson)=>{resolve(dataJson)};
+      //把script标签添加到body结尾
+      document.body.appendChild(script);
+    })
+  }
+  //?jsoncallback=fn&page=1&cate=recommend
+  jsonp('http://phont.sina.cn/aj/index',{page:1,cate:'recommend'},'jsoncallback')
+    .then(data=>{
+      console.log(data);
+    })
+</script>
+
+</body>
+</html>
