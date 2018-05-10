@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css">
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+</head>
+<body>
+<main>
+  <h2>以下代码输出顺序是什么，为什么？</h2>
+  <pre>
+      <code class="javascript" id="code">
+      setTimeout(()=>{
+        console.log(4);
+        Promise.resolve(8).then(v=>{
+          console.log(v);
+        }).then(()=>{
+          console.log(9);
+        })
+      },0);
+      setTimeout(()=>{
+        console.log(10);
+        Promise.resolve(11).then(v=>{
+          console.log(v);
+        }).then(()=>{
+          console.log(12);
+        })
+      });
+      new Promise(resolve => {
+        console.log(1);
+        for (var i=0;i<10000;i++){
+          i == 9999 && resolve()
+        }
+        console.log(2);
+      }).then(()=>{
+        console.log(5);
+        Promise.resolve(7).then(v=>{
+          console.log(v)
+        })
+      }).then(()=>{
+        console.log(6)
+      });
+      console.log(3)
+      </code>
+    </pre>
+</main>
+<script>
+  hljs.initHighlightingOnLoad();
+
+  /** 执行顺序是：1,2,3,5,7,6,4,8,9,10,11,12
+   *  解释：
+   *  今天在群里看到大佬发的此类问题的链接，英文。。。
+   *  具体的原理没看懂，但是解决规则大概明白了
+   *
+   *  首先，从上往下执行
+   *  1.把第一个遇到的setTimeout 存入 Tasks 任务队列中
+   *  2.遇到第二个setTimeout 继续存入 Tasks 中，接着前一个setTimeout
+   *  3.下面开始执行new Promise
+   *    打印出 1
+   *    开始循环 定义Promise 的 resolve 执行 条件
+   *    由于同步任务正在执行，所以把 resolve 对应的 then() 存入 另一个任务队列 microTasks
+   *    (microTasks 优先级 高于，且把现有的microTasks中的任务执行完，才能继续执行 Tasks 中的任务)
+   *    继续执行，打印2
+   *  4.继续执行，打印 3
+   *  5.这时同步任务执行完成，开始去执行microTasks任务队列中的任务
+   *    也就是当前队列中的 Promise 对应的 then()
+   *    打印 5
+   *    继续执行，执行到Promise.resolve(7).then()
+   *    会立即在当前的 microTasks 队列 末尾添加一个 任务，
+   *    当5，执行完立即去执行 打印出 7
+   *    因为执行完then()后会返回一个 Promise 对象，状态为 fulfilled
+   *    继续执行后面的then()
+   *    打印 6
+   * 6. 这时microTasks 队列中已经没有任务了
+   *    所以转向执行 Tasks 中的第一个setTimeout
+   *    直接打印出 4
+   *    接着执行Promise.then() 并且立即添加在 microTasks 队列结尾
+   *    打印出 8 ， 后面还有then(),继续把then()中的 函数放到microTasks 队列中去
+   *    然后执行 输入 9
+   *    因为 microTasks 队列中已经没有等待的任务了，继续返回 Tasks 执行 第二个setTimeout
+   * 7. 打印出 10
+   *    执行Promise.resolve(11) 把 then()对应的 回调放到 microTasks 中并开始执行
+   *    打印出 11，接着把后面的.then()对应的回调放在 microTasks 的队列中 并 执行
+   *    打印出 12
+   * 8. 队列中已经没有任务了，结束
+   * */
+  setTimeout(()=>{
+    console.log(4);
+    Promise.resolve(8).then(v=>{
+      console.log(v);
+    }).then(()=>{
+      console.log(9);
+    })
+  },0);
+  setTimeout(()=>{
+    console.log(10);
+    Promise.resolve(11).then(v=>{
+      console.log(v);
+    }).then(()=>{
+      console.log(12);
+    })
+  });
+  new Promise(resolve => {
+    console.log(1);
+    for (var i=0;i<10000;i++){
+      i == 9999 && resolve()
+    }
+    console.log(2);
+  }).then(()=>{
+    console.log(5);
+    Promise.resolve(7).then(v=>{
+      console.log(v)
+    })
+  }).then(()=>{
+    console.log(6)
+  });
+  console.log(3)
+
+
+
+</script>
+</body>
+</html>
