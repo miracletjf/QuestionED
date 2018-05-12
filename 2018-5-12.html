@@ -22,6 +22,7 @@
   </style>
 </head>
 <body>
+<h2>可随意拖动的小球</h2>
 <div class="ball" id="ball"></div>
 <script>
   /** 实现思路
@@ -50,7 +51,6 @@
       if(enMove){
         let top;
         let left;
-        console.log(event);
         //超出Y边界处理
         if (event.changedTouches[0].clientY < 0){
           top = -ball.clientHeight/2;
@@ -106,7 +106,7 @@
       enMove = false;
     };
   }
-
+  
 </script>
 </body>
 </html>
