@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <style>
+    html,body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+    .ball {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 20px;
+      height: 20px;
+      background: #ff7512;
+      border-radius: 100%;
+    }
+  </style>
+</head>
+<body>
+<div class="ball" id="ball"></div>
+<script>
+  /** 实现思路
+   *  1. 设置全局变量 控制 拖动状态
+   *  2. 鼠标点下启用拖动，
+   *     移动监听鼠标位置
+   *     鼠标抬起，关闭拖动状态
+   *  3. 在监听小球移动时候，刚开始鼠标的太快会离开小球
+   *     这时也就出现了一个bug,鼠标抬起，小球还是在移动
+   *     所以不能拖的太快，这样又不满足题意，
+   *     不可随意拖动
+   *  4. 若想随意拖动，那就不能监听小球对象，改为监听document就没问题了
+   *  5. 小球超出边界处理
+   * */
+
+  let ball = document.getElementById('ball');
+  let enMove = false;
+  ball.onmousedown = function () {
+    enMove = true;
+  };
+  document.onmousemove = function (event) {
+    if(enMove){
+      let top;
+      let left;
+      //超出Y边界处理
+      if (event.clientY < 0){
+        top = -ball.clientHeight/2;
+      } else if (event.clientY > document.documentElement.clientHeight){
+        top = document.documentElement.clientHeight -ball.clientHeight/2;
+      }else{
+        top = event.clientY - ball.clientHeight/2;
+      }
+      //超出X边界处理
+      if(event.clientX < 0 ){
+        left = -ball.clientWidth/2;
+      } else if(event.clientX > document.documentElement.clientWidth){
+        left = document.documentElement.clientWidth - ball.clientWidth/2;
+      }else {
+        left = event.clientX - ball.clientWidth/2;
+      }
+      ball.style.top = top + 'px';
+      ball.style.left = left + 'px';
+    }
+  };
+  ball.onmouseup = function () {
+    enMove = false;
+  };
+</script>
+</body>
+</html>
