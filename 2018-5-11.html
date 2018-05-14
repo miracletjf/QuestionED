@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css">
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+</head>
+<body>
+<main>
+  <h4>给定正整数n和m，写一个函数 dispatch(n,m)<br>
+      把1~n尽量平均的分为m个数组，如：
+  </h4>
+  <pre><code class="javascript">
+    dispatch(6,3)
+    //[[1,2],[3,4],[5,6]]
+    dispatch(9,2)
+    //[[1,2,3,4,5],[6,7,8,9]]
+  </code></pre>
+</main>
+<script>
+  hljs.initHighlightingOnLoad();
+  /** 这题的考点应该就是 n/m 是小数，而不是整数吧
+   *  Math.floor()  //向下取整
+   *  Math.ceil()   //向上取整
+   *  Math.round()  //四舍五入
+   * */
+  const dispatch = (n,m)=>{
+    let result = [];
+    let num = Math.floor(n/m);
+    let count = 0;
+    let remainder = n%m;
+    for(let i=0;i<m;i++){
+      let tempCount = num;
+      let tempRes = [];
+      if(remainder > 0){
+        tempCount++;
+        remainder--;
+      }
+      for(let j=0;j<tempCount;j++){
+        count++;
+        tempRes.push(count);
+      }
+      result.push(tempRes);
+    }
+    return result;
+  };
+  console.log(dispatch(6,3));
+  console.log(dispatch(9,2));
+</script>
+</body>
+</html>

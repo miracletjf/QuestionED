@@ -34,18 +34,23 @@
   }
 
   /** 实现方法
-   *  1. 先对字符串排序，再逐一对比
-   *  2. 两层for循环
+   *  1. 先对字符串排序，再逐一对比  (时间复杂度，2nlogn+(n+1)/2)
+   *  2. 两层for循环  (时间复杂度 n2)
    *     (1). 如果匹配，标记并且break
    *     (2). 一轮循环结束，没有匹配值，return false
-   *  3. 利用hash表来存数据
-   *      (1). hash1存str1
-   *      (2). hash2存str2
-   *      (3). 比较两个hash是否相等，不相等return false
-   *  4. 利用indexOf判断str2中的每个元素
+   *  3. 利用hash表来存数据 (时间复杂度，3n)
+   *     (1). hash1存str1
+   *     (2). hash2存str2
+   *     (3). 比较两个hash是否相等，不相等return false
+   *  4. 利用indexOf判断str2中的每个元素，是否与str1中的字符匹配  (时间复杂度，n2)
+   *     (1). 如果有匹配,把str1中的元素删除，继续进行下一轮匹配
+   *          因为需要删除str1中的元素，用到splice()，所以需要把str1转变为数组
+   *     (2). 如果不匹配，return false
+   *
+   *  对时间复杂度不太清楚，查看结果，发现二种方法反而最快，第三种有时也是最快，原因不太明白
    * */
 
-  //匹配函数
+  //匹配函数1
   function isMatch(str1,str2) {
     if(str1.length !== str2.length){
       return false;
@@ -88,27 +93,23 @@
     if(str1.length!==str2.length){
       return false;
     }
-    let hash1 ={};
-    let hash2 ={};
+    let hash ={};
+
     for(let i=0;i<str1.length;i++){ //n
-      if(!hash1[str1[i]]){
-        hash1[str1[i]] = 0;
+      if(!hash[str1[i]]){
+        hash[str1[i]] = 0;
       }
-      if(!hash2[str2[i]]){
-        hash2[str2[i]] = 0;
-      }
-      hash1[str1[i]]++;
-      hash2[str2[i]]++;
+   
+      hash[str1[i]]++;
     }
 
-    for(let key in hash1){  //n
-      if(hash1[key] !== hash2[key]){
+    for(let i=0;i<str2.length;i++){  //n
+      if(!hash[str2[i]]){
         return false;
       }
+      hash[str2[i]]--;
     }
-
     return true;
-
   }
 
   //匹配函数4
@@ -118,34 +119,44 @@
     }
     let str1Arr = Array.prototype.slice.call(str1);
     let temp;
-    let flag = [];
     for(let i=0;i<str2.length;i++){
        temp= str1Arr.indexOf(str2[i]);
-      if( temp === -1 || typeof flag !== 'undefined'){
+      if( temp === -1 ){
         return false;
       }
-      flag[temp] = 1;
       str1Arr.splice(temp,1);
     }
-
     return true;
 
   }
+  
+  //匹配函数5
+  function isMatch5(str1,str2) {
+    if(str1.length !== str2.length) return false;
+    for(let i=0;i<str1.length;i++) {
+      str2 = str2.replace(str1[i],'');
+    }
+    return !str2;
+  }
 
   function test(str1,str2) {
-    console.log(execTimes(isMatch,10000)(str1,str2),'match');
-    console.log(execTimes(isMatch2,10000)(str1,str2),'match2');
-    console.log(execTimes(isMatch3,10000)(str1,str2),'match3');
-    console.log(execTimes(isMatch4,10000)(str1,str2),'match4');
+    console.log(isMatch(str1,str2));
+    console.log(isMatch2(str1,str2));
+    console.log(isMatch3(str1,str2));
+    console.log(isMatch4(str1,str2));
+    console.log(isMatch5(str1,str2));
+    console.log(execTimes(isMatch,10000000)(str1,str2),'match');
+    console.log(execTimes(isMatch2,10000000)(str1,str2),'match2');
+    console.log(execTimes(isMatch3,10000000)(str1,str2),'match3');
+    console.log(execTimes(isMatch4,10000000)(str1,str2),'match4');
+    console.log(execTimes(isMatch5,10000000)(str1,str2),'match5');
     console.log('\n');
   }
 
   function operate() {
-    test('hello','heoll');
-    test('heeello','heoooll');
-    test('something','gnihtemos');
-    test('laksjdhfgzmxncbvtyrueiowpq','tyureiowpqjdhfgskalmznxbcv');
-    test('asdflkjhglkjhashdg','fdlsjkdfgaslkdfkgs');
+    test('fjfjfjfjfjfjfjfjfjfj','ffjjffjjjjffjjffjfjf');
+    test('ijnbhuijnbhuiujhnb','ujihbnjuhinbjnhbui');
+    test('ijfijfijfijfijfijfijfijfijfijf','fjifjifjifjifjifjifjifjifjifji');
   }
 
 

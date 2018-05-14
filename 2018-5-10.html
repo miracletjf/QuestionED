@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css">
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+</head>
+<body>
+<main>
+  <h2>写一个深拷贝函数deepCopyArray,实现数组的深拷贝</h2>
+  <strong>其中：</strong>
+  <ul>
+    <li>数组可嵌套</li>
+    <li>数组元素只能是Number,Boolean,String,Array类型之一</li>
+    <li>
+      当存在循环引用如何解决，如:
+      <pre><code class="javascript">
+        let arr = [1,2,3]
+        arr.push(arr)
+        let arr2 = deepCopyArray(arr)
+      </code></pre>
+    </li>
+  </ul>
+</main>
+<script>
+  hljs.initHighlightingOnLoad();
+  /** 实现思路
+   *  1.循环遍历，给定的数组
+   *  2.若每个值的类型还是array
+   *    (1).该array 等于待拷贝的 数组
+   *        则该数组为循环引用，把引用指向自身
+   *    (2).不相等则递归调用函数，继续拷贝内部数组，返回值传给，当前的位置
+   *  3.return
+   * */
+  //数组深拷贝
+  const deepCopyArray = array =>{
+    /*数组逻辑*/
+    let res = [];
+    for(let val of array) {
+      if(getType(val) === 'array'){
+        if(val === array){
+          res.push(res);
+        }else{
+          res.push(deepCopyArray(val));
+        }
+      }else{
+        res.push(val);
+      }
+    }
+    return res;
+  };
+
+  /*获取数据类型*/
+  const getType = obj =>{
+    let typeString = Object.prototype.toString.call(obj);
+    return typeString.match(/\[object (.*)\]/)[1].toLowerCase();
+  };
+
+  let arr = [1,2,3];
+  arr.push(arr);
+  let arr2 = deepCopyArray(arr);
+  console.log(arr2);
+
+/*  console.log(arr);
+  console.log(arr2 === arr.arr);*/
+
+</script>
+</body>
+</html>

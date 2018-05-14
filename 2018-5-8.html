@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css">
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <title>Title</title>
+</head>
+<body>
+<main>
+  <h2>以下代码输出什么，为什么？</h2>
+  <pre>
+    <code class="javascript" id="code">
+      setTimeout(()=>{
+        console.log(4)
+      },0);
+      new Promise(resolve =>{
+        console.log(1);
+        for(var i=0;i<10000;i++){
+          i === 9999 && resolve()
+        }
+        console.log(2)
+      }).then(()=>{
+        console.log(5)
+        Promise.resolve(7).
+        then(v=>console.log(v))
+      }).then(()=>{
+        console.log(6)
+      })
+      console.log(3)
+    </code>
+  </pre>
+</main>
+<script>
+  hljs.initHighlightingOnLoad();
+
+
+  /** 打印顺序 1,2,3,5,7,6,4
+   *    观点来源于知乎
+   *  1,2,3这个顺序没什么多解释的，因为是同步任务，按顺序执行
+   *  Promise的回调属于异步任务，
+   *  当promise由pending状态改变时，会把对应的回调存放到任务队列中
+   *  关于任务队列，一个浏览器环境只能有一个执行栈，可以有多个任务队列
+   *  只有一个任务队列中所有的任务执行完，才会去执行另一个任务队列
+   *  相同的任务源，只能放在一个任务队列中
+   *  多个任务源可以放在多个任务队列中去
+   *  而Promise的任务都会放到一个'PromiseJobs'的任务队列中去
+   *  所以会打出 5,7,6
+   *  7后执行是因为7是由另一个Promise创建的异步任务，
+   *  而7的状态是立马变成fulfilled，立即把7的方法放入任务队列
+   *  而6是在7之后才加入任务队列的，所以后执行
+   *  至于 setTimeout ，也是一个异步任务，它也会被添加到一个新的任务队列中去
+   *  只是这个任务队列是在Promise的任务队列之后执行的，这可能跟队列的优先级有关
+   *  setTimeout 的优先级可能比较低
+   *  所以 最后打出4
+   * */
+
+  setTimeout(()=>{
+    console.log(4)
+  },0);
+  new Promise(resolve =>{
+    console.log(1);
+    for(var i=0;i<10000;i++){
+      i === 9999 && resolve()
+    }
+    console.log(2)
+  }).then(()=>{
+    console.log(5)
+    Promise.resolve(7).
+    then(v=>console.log(v))
+  }).then(()=>{
+    console.log(6)
+  })
+  console.log(3)
+</script>
+</body>
+</html>

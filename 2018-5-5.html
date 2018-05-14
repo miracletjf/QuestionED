@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css">
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <title>Title</title>
+</head>
+<body>
+<main>
+  <h2>以下代码输出什么？为什么？</h2>
+  <pre>
+    <code class="javascript" id="code">
+   Svar app = {
+    fn1: function () {
+      console.log(this);
+    },
+    fn2: function () {
+      return function () {
+        console.log(this);
+      }
+    },
+    fn3: function () {
+      function fn() {
+        console.log(this);
+      }
+    },
+    fn4: function () {
+      return {
+        fn: function () {
+          console.log(this);
+          }
+        }
+      },
+    fn5(){
+      setTimeout(function () {
+        console.log(this)
+      },10)
+    },
+    fn6(){
+      setTimeout(()=>{
+        console.log(this)
+      },20)
+    },
+    fn7(){
+      setTimeout((function(){
+        console.log(this)
+      }).bind(this),30)
+    },
+    fn8: ()=>{
+      setTimeout(()=>{
+        console.log(this)
+      },40)
+    }
+  };
+  
+  app.fn1();      ==> (app).fn()  ==> this === app
+  app.fn2()();    ==> (function(){console.log(this)})()  ==> this === window
+  app.fn3();      ==> {function fn(){console.log(this)}} ==> 仅返回一个对象，无执行
+  app.fn4().fn(); ==> app.fn4().fn() ==> this === app,fn4()
+  app.fn5();      ==> setTimeout中的函数，是在10毫秒以后执行，这时候内部function所在的执行环境是window,所以this指向window
+  app.fn6();      ==> 看起来跟fn5()长得很像，其实有一个细节要注意，
+                      那就是箭头函数的this,并不是他执行时的环境，而且通过作用域链向上找，
+                      找到最近的this，作为自己的this，所以这里的this指向fn6()中的this
+                      this为app
+  app.fn7();      ==> 由于setTimeout中的函数bind在fn7()中的this，所以this指向app
+  app.fn8();      ==> 由于箭头函数的特性，最终会指向app中的this，指向window
+    
+    
+    </code>
+  </pre>
+  
+  <script>
+      hljs.initHighlightingOnLoad();
+  </script>
+</main>
+
+<script>
+  var app = {
+    fn1: function () {
+      console.log('fn1',this);
+    },
+    fn2: function () {
+      return function () {
+        console.log('fn2',this);
+      }
+    },
+    fn3: function () {
+      function fn() {
+        console.log('fn3',this);
+      }
+    },
+    fn4: function () {
+      return {
+        fn: function () {
+          console.log('fn4',this);
+          }
+        }
+      },
+    fn5(){
+      setTimeout(function () {
+        console.log('fn5',this)
+      },10)
+    },
+    fn6(){
+      setTimeout(()=>{
+        console.log('fn6',this)
+      },20)
+    },
+    fn7(){
+      setTimeout((function(){
+        console.log('fn7',this)
+      }).bind(this),30)
+    },
+    fn8: ()=>{
+      setTimeout(()=>{
+        console.log('fn8',this)
+      },40)
+    }
+  };
+  
+  app.fn1();
+  app.fn2()();
+  app.fn3();
+  app.fn4().fn();
+  app.fn5();
+  app.fn6();
+  app.fn7();
+  app.fn8();
+  
+</script>
+</body>
+</html>
