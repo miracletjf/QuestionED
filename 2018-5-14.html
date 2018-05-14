@@ -1,10 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="UTF-8">
-        <title></title>
+  <meta charset="UTF-8">
+  <title></title>
 </head>
 <body>
-	
+<main>
+
+</main>
+<script>
+  function sort(arr) {
+    /*冒泡*/
+    for(let i=1;i<arr.length;i++){
+      for(let j=0;j<arr.length-i;j++){
+        if((arr[j] - arr[j+1])>0){
+          let temp = arr[j];
+          arr[j] = arr[j+1];
+          arr[j+1] = temp;
+        }
+      }
+    }
+
+    /*选择*/
+    return arr;
+  }
+
+  console.log(sort([2,3,5,7,2,5,3,9,12,32,43,24,12,13,42]));
+
+</script>
 </body>
 </html>
