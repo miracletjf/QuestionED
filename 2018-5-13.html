@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+<main>
+
+</main>
+<script>
+
+  /** 实现思路
+   *  1. 因为函数只能执行一次
+   *  2. 所以在执行函数之前，添加一步判断
+   *  3. 利用全局对象 once 函数
+   *     判断once[fnParam]是否存在
+   *     若第一次执行，则标记 once[fnParam]
+   **/
+
+  function once(fnParam){
+      return function () {
+        if(!once[fnParam]){
+          once[fnParam]= true;
+          console.dir(once);
+          fnParam.apply(null,arguments)
+        }
+      };
+
+  }
+  let log1 = once(function () {
+    console.log(1)
+  });
+  log1(); //打印出1
+  log1(); //不再打印
+  log1(); //不再打印
+  log1(); //不再打印
+</script>
+</body>
+</html>
