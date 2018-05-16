@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Bus对象</title>
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css">
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+</head>
+<body>
+<main>
+  <h4>写一个Bus对象，提供on,emit方法，on实现监听，emit实现触发。能使用如下方式使用</h4>
+  <pre><code>
+   Bus.on('event',function (data) {
+      console.log(data)
+    })
+    Bus.on('hi',function (data) {
+      console.log(data);
+    })
+    Bus.emit('event',{name:'hello'});
+    Bus.emit('hi',{to:'hunger'});
+    Bus.emit('hi',{to:'valley'});
+  </code></pre>
+</main>
+<script>
+  hljs.initHighlightingOnLoad();
+  /** 实现思路
+   *  首先自己不了解是不是有什么额外的要求，因为并不明白Bus是什么
+   *  所以就根据事例，实现功能
+   *
+   *  1. Bus.on()方法是回调函数的形式，所谓的监听，就是给对象里面添加了一个对应的方法
+   *  2. Bus.emit()方法是执行回调的，并且传入要调的是哪个回调
+   *  3. 为了不让用户直接更改Bus内部的回调，稍微对回调名称做了一些处理
+   * */
+
+  let Bus = {
+    on:function (name,callback) {
+      this['_'+name] = callback;
+    },
+    emit:function (name,data) {
+      this['_'+name](data);
+    }
+  };
+  Bus.on('event',function (data) {
+    console.log(data)
+  })
+  Bus.on('hi',function (data) {
+    console.log(data);
+  })
+  Bus.emit('event',{name:'hello'});
+  Bus.emit('hi',{to:'hunger'});
+  Bus.emit('hi',{to:'valley'});
+</script>
+</body>
+</html>
