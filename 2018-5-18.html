@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+<main>
+  <p>写一个曝光组件Expourse,实现当都没元素出现在浏览器窗口使用中是，执行回调函数，只执行一次。其中回调函数中的this代表都没元素</p>
+  <div style="height: 1200px"></div>
+  <div class="observe" id="observe">观察</div>
+
+</main>
+<script>
+  /**
+   * */
+
+  function Expourse(node) {
+    this.element = node
+  }
+  Expourse.prototype.once = function (callback) {
+    let _this = this;
+    if(!_this.events){
+      _this.events = [];
+    }
+    console.log(callback);
+    _this.addEventListener(callback);
+  }
+  Expourse.prototype.addEventListener = function (callback) {
+    let _this = this;
+    let index = _this.events.length;
+    _this.events.push(true);
+    window.onscroll = function () {
+      if(_this.events[index] && window.scrollY >= _this.element.offsetTop - document.documentElement.clientHeight){
+        callback.call(_this.element);
+        _this.events[index] = false;
+      }
+    }
+  }
+  let expourse = new Expourse(document.getElementById('observe'));
+  expourse.once(function () {
+    console.log(this);
+    console.log('world');
+  })
+</script>
+</body>
+</html>
