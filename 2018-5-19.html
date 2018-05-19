@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+<main></main>
+<script>
+  /** 实现思路
+   *  1.基于第25关的答案的思路，想到了defineProperty
+   *  2.获取到data,computed的对象
+   *    遍历添加到内部this对象上
+   *  3.对于data,computed处理方式是不同的
+   *    因为data只需要把值取出来就行，所以要使用value
+   *    而computed需要把内部的函数执行的结果赋值给this,所以要使用get()
+   *  4.因为data的数据可修改，所以把writable设置为true
+   *  5.利用call指定name()内部的this为当前实例
+   * */
+  function Vue(options) {
+    let {data,computed} = options
+    for(let key in data){
+      Object.defineProperty(this,key,{
+        value: data[key],
+        writable: true
+      })
+    }
+    for(let key in computed){
+      Object.defineProperty(this,key,{
+        get: function () {
+          return computed[key].call(this);
+        }
+      })
+    }
+  }
+  let app = new Vue({
+    data:{firstName:'Frank',lastName:'Fang'},
+    computed:{
+      name(){
+          return this.firstName + ' ' + this.lastName;
+      }
+    }
+  })
+  console.log(app.name)
+  app.firstName = 'jack'
+  console.log(app.name)
+</script>
+</body>
+</html>
