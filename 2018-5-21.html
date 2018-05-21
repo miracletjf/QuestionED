@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+<main>
+  <div style="height: 1200px">
+    <h4>写一个 throttle 函数，可以按照如下方式调用，实现的效果是：当连续滚动窗口的过程中，每100ms至多执行一次print</h4>
+  </div>
+</main>
+<script>
+  /** 实现思路
+   *  1.window.addEventListener接受一个函数
+   *    所以 throttle 返回一个函数
+   *  2.最多100ms执行一次
+   *    设置一个变量，标记当前状态，是否可以执行 fn()
+   *    可执行状态： 执行，标记变量为 不可执行状态 ，设置定时器100ms后改变状态
+   *  3.实现需求
+   * */
+
+  function throttle(fn,time) {
+    //补全
+    let flag = false;
+    return function () {
+      if(!flag){
+        print.call();
+        flag = true;
+        setTimeout(function () {
+          flag = false;
+        },time)
+      }
+    }
+  }
+  function print() {
+    console.log('print');
+  }
+  window.addEventListener('scroll',throttle(print,100));
+</script>
+</body>
+</html>
