@@ -42,6 +42,8 @@
      *     2. 递归调用
      *  5. 我采用递归这种，所以需要在promise内部在添加一个函数，代码如下
      * */
+
+    //方法1
     function exam() {
       return new Promise(function (resolve,reject) {
         fn();
@@ -53,6 +55,18 @@
             console.log('不及格，继续考试');
             setTimeout(fn,1000);
           }
+        }
+      })
+    }
+    //方法2
+    function exam2() {
+      return new Promise(function (resolve,reject) {
+        let score = Math.floor(Math.random() * 101);
+        if (score >= 60) {
+          resolve(score);
+        } else {
+          console.log('不及格，继续考试');
+          setTimeout(()=>{resolve(exam2())},1000);
         }
       })
     }
