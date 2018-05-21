@@ -6,14 +6,26 @@
 </head>
 <body>
 <main>
-  <p>写一个曝光组件Expourse,实现当都没元素出现在浏览器窗口使用中是，执行回调函数，只执行一次。其中回调函数中的this代表都没元素</p>
+  <p>写一个曝光组件Expourse,实现当都没元素出现在浏览器窗口使用中是，执行回调函数，只执行一次。其中回调函数中的this代表当前元素</p>
   <div style="height: 1200px"></div>
   <div class="observe" id="observe">观察</div>
 
 </main>
 <script>
-  /**
-   * */
+  /** 实现思路
+   *  1.Expourse是一个构造函数，传入的是一个节点对象
+   *    内部用element属性接收node节点
+   *  2.因为Expourse的实例有个once的公用方法
+   *    所以定义prototype.once()
+   *  3.once()接收一个方法，且在元素出现在浏览器窗口中时，才执行一次
+   *    事件可以有多个，所以内部用events数组来存储事件标记
+   *    callbacks数组来存储方法
+   *  4.当声明回调函数时，标记当前状态，并且将函数存在callbacks中
+   *  5.添加事件监听，满足条件时执行回调函数组，并且将当前的状态标记为已经执行完
+   *  6.回调函数用call来调用，指定内部this为 _this.element
+   *  7.当元素满足 文档顶部距离 = 滚动条滚动的距离 + 窗口高度 的时候，即为曝光状态
+   *  8.关于各种距离api,很混乱，周末写个博客总结一下
+   **/
 
   function Expourse(node) {
     this.element = node
@@ -22,23 +34,30 @@
     let _this = this;
     if(!_this.events){
       _this.events = [];
+      _this.callbacks =[];
     }
-    _this.addEventListener(callback);
-  }
-  Expourse.prototype.addEventListener = function (callback) {
-    let _this = this;
-    let index = _this.events.length;
     _this.events.push(true);
+    _this.callbacks.push(callback);
+    _this.addEventListener();
+  };
+  Expourse.prototype.addEventListener = function () {
+    let _this = this;
     window.onscroll = function () {
-      if(_this.events[index] && window.scrollY >= _this.element.offsetTop - document.documentElement.clientHeight){
-        callback.call(_this.element);
-        _this.events[index] = false;
+      for(let i=0 ;i<_this.events.length;i++){
+        if(_this.events[i] && window.scrollY >= _this.element.offsetTop - document.documentElement.clientHeight){
+          _this.callbacks[i].call(_this.element);
+          _this.events[i] = false;
+        }
       }
     }
-  }
+  };
   let expourse = new Expourse(document.getElementById('observe'));
   expourse.once(function () {
     console.log(this);
+    console.log('world');
+  });
+  expourse.once(function () {
+    console.log('111');
     console.log('world');
   })
 </script>

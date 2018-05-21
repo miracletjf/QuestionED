@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+<main>
+  <h2>简单模拟Vue的数据代理功能</h2>
+</main>
+<script>
+  /** 实现思路
+   *  1. 循环遍历options中data对象内部的 key
+   *     赋值给构造函数内部的this变量。
+   *  2. 返回一个处理好的this对象
+   *  3. 测试了一下prototype，没有影响到
+   * */
+
+  function Vue(options) {
+    this.options = options;
+    this.init = function () {
+      console.log(this)
+      let objs = this.options.data;
+      for(let key in objs){
+        this[key] = objs[key];
+      }
+      return this;
+    };
+    return this.init();
+  }
+  Vue.prototype = {
+    ss: function () {
+      console.log('ss');
+    }
+  }
+  let app = new Vue({
+    data:{message:'hi'}
+  })
+
+  console.log(app.message);
+  app.ss();
+</script>
+</body>
+</html>
