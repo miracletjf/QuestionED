@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+<main style="height: 1400px">
+  <h4>写一个debounce函数，可以按照如下方式调用，实现的效果是：当连续滚动窗口时，滚动停下300ms后才执行print</h4>
+</main>
+<script>
+  /** 实现思路
+   *  1.window.addEventListener()第二个参数需要接受一个函数
+   *    所以debounce返回一个函数
+   *  2.滚动停下300ms才执行print
+   *    所以内部有一个定时器setTimeOut,并且需要放在返回的函数里执行
+   *  3.因为要设置连续滚动，停下300ms才会执行
+   *    所以内部作用域有一个变量timer接收定时器
+   *    在返回函数执行前先清理掉之前的定时器
+   *      若触发函数时，时间间隔超过300ms则无效
+   *      若触发函数时，时间间隔不超过300ms则清除之前的定时器
+   *  4.满足需求
+   * */
+  function debounce(fn,time) {
+    let timer;
+    return function () {
+      window.clearTimeout(timer)
+      timer = setTimeout(fn,time)
+    }
+
+  }
+  function print() {
+    console.log('print')
+  }
+  window.addEventListener('scroll',debounce(print,300));
+</script>
+</body>
+</html>
