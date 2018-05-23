@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+<main>
+  <h4>
+    解决小数点相加出现的异常，比如：0.1+0.2 = 0.3000000000004,这种情况，如何解决？<br>
+    如果是减法，乘法，除法呢。
+  </h4>
+</main>
+<script>
+  /** javaScript里的数字采用IEEE 754标准的64位双精度浮点数。
+   *  该规范定义了浮点数的格式，对于64位的浮点数在内存中表示，
+   *    最高的1位是符号位
+   *    接着是11位的指数
+   *    剩下的52位为有效数字
+   *
+   *      0     00000000000    0000000000000000000000000000000000000000000000000000
+   *    ------ -------------- ------------------------------------------------------
+   *    符号位   指数位 11        有效数字 52位
+   *
+   *    有效数字第一位默认为 1，有效数字总是 1.xxxx 的形式，xxxx保存在64位浮点数之中，最长可能52位，因此JavaScript提供的有效数字最长为53个二进制位。
+   *
+   *    javaScript 在计算 0.1+0.2 时，到底发生了什么？
+   *    10进制的 0.1 和 0.2 会被转换成二进制，但由于浮点数用二进制表达时是无穷的，例如
+   *     0.1 --> 0.00011001100110011...(无限)
+   *     0.2 --> 0.00110011001100110...(无限)
+   *    两者相加结果为
+   *     0.0100110011001100110011001100110011001100110011001100
+   *    转换为十进制就是 0.3000000000000004
+   *
+   *    由于toFixed()方法返回值不一定准确，所以需要自己封装一个方法
+   *
+   *    同理可求 减法，除法，乘法
+   * */
+
+  function accAdd(arg1,arg2) {
+    let r1,r2,m,c;
+    try{
+      r1 = arg1.toString().split('.')[1].length;
+    }catch (e) {
+      r1 = 0;
+    }
+    try{
+      r2 = arg2.toString().split('.')[1].length;
+    }catch (e) {
+      r2 = 0;
+    }
+
+    c = Math.abs(r1-r2);
+    m = Math.pow(10,Math.max(r1,r2));
+    if(c>0){
+      let cm = Math.pow(10,c);
+      if(r1>r2){
+        arg1 = Number(arg1.toString().replace('.',''));
+        arg2 = Number(arg2.toString().replace('.','')) * cm;
+      }else{
+        arg1 = Number(arg1.toString().replace('.','')) * cm;
+        arg2 = Number(arg2.toString().replace('.',''));
+      }
+    }else{
+      arg1 = Number(arg1.toString().replace('.',''));
+      arg2 = Number(arg2.toString().replace('.',''));
+    }
+    return (arg1+arg2)/m;
+  }
+
+  console.log(accAdd(0.1,0.2));
+
+</script>
+</body>
+</html>

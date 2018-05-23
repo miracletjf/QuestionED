@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+<main>
+  <h2>以下代码输出什么？为什么</h2>
+</main>
+<script>
+
+  /** 答案：undefined
+   *  解答：看题目知道，本题考察的知识点是作用域和提升
+   *       方方老师曾经讲过，拿到代码先提升
+   *       那么接下来，也就一目了然了
+   *
+   *       执行 fn()
+   *       因为 fn = fn1() return fn3
+   *       fn() === fn3()
+   *       执行 fn3() 内部 执行了 fn2()
+   *       执行 fn2()
+   *       console.log(a)
+   *       因为 fn2()内部没有 a
+   *       所以沿着作用域链向上找
+   *       找到 fn3() 内部的 a
+   *       因为 fn2() 执行的 执行的时候 fn3()中的 a 还没有赋值
+   *       所以是 undefined
+   *
+   *       打印出 undefined
+   * */
+
+  var a;
+  var fn;
+  function fn1() {
+    var a;
+    function fn3() {
+      var a;
+      function fn2() {
+        console.log(a)
+      }
+      fn2();
+      a = 4;
+    }
+    a = 2;
+    return fn3;
+  }
+  a = 2;
+  fn = fn1();
+  fn();
+
+
+</script>
+</body>
+</html>
