@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+<main>
+  <h4>
+    10个ajax的http请求同时发起，全部返回后展示所有的响应结果，如何设计实现？<br>
+    如果我容忍最多失败3个http请求失败，如何设计这个功能？
+  </h4>
+</main>
+<script>
+  /** 实现思路
+   *  1.10个ajax的http请求同时发起
+   *    并且全部返还后展示所有的响应结果
+   *    基于这个需求，想到了Promise.all()可以实现该需求
+   *    当全部成功以后，返回所有的成功返回值组成的数组。
+   *  2.
+   * */
+
+  /*全部成功以后返回*/
+  function ajax(url,data) {
+    return new Promise((resolve,reject) => {
+      let xhr = new XMLHttpRequest();
+      xhr.onreadystatechange = function (e) {
+        if(this.readyState === 4){
+          if(this.status === 200){
+            console.log('success');
+            resolve(this.responseText)
+          }else{
+            reject(this.statusText);
+          }
+        }
+      };
+      xhr.onerror = function (e) {
+        reject(this.statusText);
+      };
+      xhr.open('GET',url);
+      xhr.send(data);
+    })
+  }
+
+  let ajaxs = [];
+
+  for(let i=0;i<10;i++){
+    ajaxs.push(ajax('test.html',{test:'666'}));
+  }
+
+  Promise.all(ajaxs).then(resText=>{
+    console.log(resText);
+  }).catch(err=>{
+    console.log(err);
+  })
+
+
+  /*允许失败最多三次*/
+  function allowErrTimes(n){
+    return new Promise((resolve,reject)=>{
+      function ajaxL(url,data) {
+        return new Promise((resolve,reject) => {
+          let xhr = new XMLHttpRequest();
+          xhr.onreadystatechange = function () {
+            if(this.readyState === 4){
+              if(this.status === 200){
+                resolve(this.responseText)
+              }else{
+                reject(this.statusText)
+              }
+            }
+          };
+          xhr.onerror = function () {
+            reject(this.statusText)
+          };
+          xhr.open('GET',url)
+          xhr.send(data)
+
+        })
+      }
+      function timesAdd() {
+        times++;
+        if(times === 10){
+          resolve();
+        }
+      }
+
+      function errFun() {
+        errTimes++;
+        if(errTimes > n){
+          reject()
+        }
+      }
+      let errTimes = 0;
+      let times = 0;
+
+      for(let i=0;i<10;i++){
+        ajaxL('test.html',{test:'666'}).then(data=>{
+          console.log(data)
+          timesAdd()
+        }).catch(()=>{
+          timesAdd();
+          errFun();
+        })
+      }
+    })
+  }
+
+  allowErrTimes(3).then(()=>{
+    console.log('less 3 times');
+  })
+
+
+
+
+
+</script>
+</body>
+</html>
