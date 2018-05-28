@@ -5,22 +5,14 @@
   <title>Title</title>
 </head>
 <body>
+<form action=""></form>
+
 <script>
-  var txt='18:May:2018 "This is an Example!"';
-
-  var re1='.*?';	// Non-greedy match on filler
-  var re2='(May)';	// Month 1
-  var re3='.*?';	// Non-greedy match on filler
-  var re4='((?:[a-z][a-z]+))';	// Word 1
-
-  var p = new RegExp(re1+re2+re3+re4,["i"]);
-  var m = p.exec(txt);
-  if (m != null)
-  {
-    var month1=m[1];
-    var word1=m[2];
-    document.write("("+month1.replace(/</,"&lt;")+")"+"("+word1.replace(/</,"&lt;")+")"+"\n");
+  var obj = {
+    f : function () {console.log('fff');}
   }
+
+  console.log(obj.f())
 </script>
 </body>
 </html>
