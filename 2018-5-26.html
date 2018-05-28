@@ -13,5 +13,37 @@
     注意：结果可能非常大，所以你需要返回一个字符串，而不是整数。
   </h4>
 </main>
+<script>
+  let arr = [3,321,3213212,5,9];
+  function match(p,n){
+    let min = p.length>n.length?n:p;
+    let i = 0;
+    for(; i < min.length ; i++ ){
+      if(p[i]>n[i]){
+        return 1;
+      }else if(p[i]<n[i]){
+        return -1;
+      }
+    }
+    if(p.length === n.length){
+      return 0;
+    }else{
+      if(min === p ){
+        let ns = n.slice(min.length);
+        return match(p,ns);
+      }else {
+        let ps = p.slice(min.length);
+        return match(ps.n);
+      }
+    }
+  }
+  arr.sort(function (a,b) {
+    let pre = a.toString().split('');
+    let next = b.toString().split('');
+    return (-match(pre,next));
+  });
+
+  console.log(arr.join(''));
+</script>
 </body>
 </html>
