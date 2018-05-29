@@ -6,6 +6,25 @@
 </head>
 <body>
 <script>
+  /** 实现思路
+   *  1. 首先对函数，变量进行提升得到
+   *      var getName
+   *      function Foo()
+   *      function getName()
+   *      Foo.getName = function ()
+   *      Foo.prototype.getName = function ()
+   *      getName = function ()
+   *  2. 然后开始从头执行代码
+   *      得到结果为 ： 2,4,1,1,2,1,1     （错误结果）
+   *  3. 浏览器执行查看结果，
+   *      浏览器结果 ： 2,4,1,1,2,3,3
+   *  4. 唯一的不同就是 最后使用 new 的构造函数属性，
+   *  5. 查找资料，mdn 搜索优先级
+   *     之前自己默认 new 优先级要低于 . 运算符，所以才会出错，
+   *     浏览文档发现，new 的 优先级很高，跟 . 一样高，仅次于 圆括号
+   *  6. 所以是顺序执行的 先 new 再执行 . 所以是执行 共用属性的 getName 方法
+   * */
+
   function Foo() {
     getName = function () {alert(1)};
     return this;
