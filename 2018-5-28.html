@@ -2,9 +2,53 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Title</title>
+  <title>快排</title>
 </head>
 <body>
+<script>
+  /** 实现思路
+   *  1. 快排的思路是遍历寻找比当前区间第一个值小的值
+   *     把比自己小的值放在自己左边
+   *     把比自己小的值放在自己右边
+   *  2. 然后取左右各个区间再进行相同的操作
+   *  3. 如此反复
+   *  4. 直到当前数组中只有一个值的时候停止
+   *  5. 既然 每次需要把自己分为两部分，
+   *     且每次都是执行相同的步骤，
+   *     那么可以想到用递归解决。
+   *  6. 函数需要传入区间开始下标，区间结束下标，比较的数组
+   * */
+  function swop(arr,a,b) {
+    let temp;
+    temp = arr[a];
+    arr[a] = arr[b];
+    arr[b] = temp;
+  }
 
+  function quickSort(arr,start,end) {
+    if(typeof start === 'undefined'){
+      start = 0;
+      end = arr.length-1;
+    }
+    if(start === end) return;
+    let pos = start+1;
+    for(let i=pos;i<= end;i++){
+      if(a[i]<a[start]){
+        swop(arr,i,pos);
+        pos++;
+      }
+    }
+    swop(arr,start,pos-1);
+    quickSort(arr,start,pos-1);
+    if(pos <= end){
+      quickSort(arr,pos,end);
+    }
+  }
+
+  let  a = [3,5,7,6,5,4,9,6,3,6,2,8,1];
+
+  quickSort(a);
+  console.log(a);
+</script>
 </body>
 </html>
