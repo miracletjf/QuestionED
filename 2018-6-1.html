@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>动态规划之最大子串</title>
+</head>
+<body>
+<script>
+  /** 问题
+   *  现有一个数组 a[-1,4,-5,4,2,-3,1,4,-1,6,-2]
+   *  若最大子数组的定义是
+   *  数组元素相加之和 在所有子数组中是最大的
+   *
+   *
+   * */
+
+  let a = [-1,4,-5,4,2,-3,1,4,-1,6,-2];
+
+  function maxSub(arr) {
+    let posInts = [];
+    let max = {
+      num:0,
+      start:0,
+      end:0
+    }
+
+    for(let i=0;i<arr.length;i++){
+      if(arr[i]>=0){
+        posInts.push(i);
+      }
+    }
+
+    for(let i=0;i<posInts.length;i++){
+      let maxTemp = {
+        num:0,
+        start:posInts[i],
+        end: posInts[i]
+      };
+      let maxSum = {
+        num:0,
+        start:posInts[i],
+        end: posInts[i]
+      };
+      for(let j = posInts[i];j<=posInts[posInts.length-1];j++){
+        maxSum.num += arr[j];
+        maxSum.end = j;
+        maxTemp = maxTemp.num>maxSum.num?maxTemp:maxSum;
+      }
+      console.log(maxTemp);
+      max = maxTemp.num>max.num?maxTemp:max;
+    }
+
+    return max;
+  }
+
+  console.log(maxSub(a));
+
+</script>
+</body>
+</html>
